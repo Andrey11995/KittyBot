@@ -2,29 +2,46 @@ import os
 import sys
 import requests
 import logging
-
+import telebot
 from logging import StreamHandler
 from telegram import ReplyKeyboardMarkup
-from telegram.ext import CommandHandler, Updater
-
+from flask import Flask, request
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+APP_URL = 'https://kot0bot.herokuapp.com/'
+API_URL = 'https://api.thecatapi.com/v1/images/search'
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = StreamHandler(sys.stderr)
 logger.addHandler(handler)
 
-URL = 'https://api.thecatapi.com/v1/images/search'
+bot = telebot.TeleBot(token=TELEGRAM_TOKEN)
+server = Flask(__name__)
+
+
+@server.route('/' + TELEGRAM_TOKEN, methods=['POST'])
+def get_message():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return '!', 200
+
+
+@server.route('/')
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url=APP_URL)
+    return '!', 200
 
 
 def get_new_image():
     try:
-        response = requests.get(URL).json()
+        response = requests.get(API_URL).json()
     except Exception as error:
         logger.warning('API котиков не отвечает!')
         logger.error(error)
@@ -62,14 +79,17 @@ def wake_up(update, context):
 
 def main():
     logger.debug('КотоБот запущен')
-    updater = Updater(token=TELEGRAM_TOKEN)
 
-    updater.dispatcher.add_handler(CommandHandler('start', wake_up))
-    updater.dispatcher.add_handler(CommandHandler('newcat', new_cat))
 
-    updater.start_polling()
-    updater.idle()
+    # updater = Updater(token=TELEGRAM_TOKEN)
+    #
+    # updater.dispatcher.add_handler(CommandHandler('start', wake_up))
+    # updater.dispatcher.add_handler(CommandHandler('newcat', new_cat))
+    #
+    # updater.start_polling()
+    # updater.idle()
 
 
 if __name__ == '__main__':
+    server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
     main()
