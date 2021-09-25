@@ -41,11 +41,15 @@ def webhook():
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    send_cat = types.KeyboardButton('🐱 КОТИКИ')
+    markup.add(send_cat)
     try:
         name = message.from_user.first_name
         bot.reply_to(
             message,
-            'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
+            'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name),
+            reply_markup=markup
         )
         bot.send_photo(message.chat.id, get_new_image())
         logger.info('Фото отправлено')
@@ -55,9 +59,6 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def new_cat(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    send_cat = types.KeyboardButton('🐱 КОТИКИ')
-    markup.add(send_cat)
     try:
         if message.text == '🐱 КОТИКИ':
             bot.send_photo(message.chat.id, get_new_image())
