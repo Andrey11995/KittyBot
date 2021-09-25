@@ -80,6 +80,7 @@ def wake_up(update, context):
 def main():
     logger.debug('КотоБот запущен')
 
+
     # updater = Updater(token=TELEGRAM_TOKEN)
     #
     # updater.dispatcher.add_handler(CommandHandler('start', wake_up))
