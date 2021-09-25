@@ -57,7 +57,7 @@ def start(message):
             ('Привет, {}\n\n'
              'Я - КотоБот.\n'
              'Я здесь для того, чтобы отправлять тебе фото '
-             'котиков и собачек по вашему запросу'.format(name)),
+             'котиков и собачек по запросу'.format(name)),
             reply_markup=markup
         )
         bot.send_message(message.chat.id, 'Для начала лови первого котика!')
@@ -99,6 +99,12 @@ def get_new_dog(message):
         print(response.status_code)
         random_image = response[0].get('url')
         return random_image
+    except KeyError:
+        logger.warning('API собачек не отвечает!')
+        text = ('К сожалению сервер собачек сейчас недоступен...\n'
+                'Попробуйте попросить у меня собачку позднее')
+        bot.send_message(message.chat.id, text)
+        bot.send_photo(message.chat.id, requests.get(sad_dog_url).content)
     except Exception as error:
         logger.warning('API собачек не отвечает!')
         logger.error(f'Ошибка: {error}')
