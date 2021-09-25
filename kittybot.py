@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-APP_URL = 'https://kot0bot.herokuapp.com/'
+APP_URL = f'https://kot0bot.herokuapp.com/{TELEGRAM_TOKEN}'
 API_URL = 'https://api.thecatapi.com/v1/images/search'
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger.setLevel(logging.DEBUG)
 handler = StreamHandler(sys.stderr)
 logger.addHandler(handler)
 
-bot = telebot.TeleBot(token=TELEGRAM_TOKEN)
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
 
 
