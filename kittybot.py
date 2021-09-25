@@ -13,12 +13,12 @@ load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 APP_URL = f'https://kot0bot.herokuapp.com/{TELEGRAM_TOKEN}'
-# API_URL = 'https://api.thecatapi.com/v1/images/search'
+API_URL = 'https://api.thecatapi.com/v1/images/search'
 
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
-# handler = StreamHandler(sys.stderr)
-# logger.addHandler(handler)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = StreamHandler(sys.stderr)
+logger.addHandler(handler)
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
@@ -46,30 +46,32 @@ def start(message):
         message,
         'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
     )
+    bot.send_photo(message.chat.id, get_new_image())
 
 
-# def get_new_image():
-#     try:
-#         response = requests.get(API_URL).json()
-#     except Exception as error:
-#         logger.warning('API котиков не отвечает!')
-#         logger.error(error)
-#         logger.info('Пытаемся запросить собачек')
-#         new_url = 'https://api.thedogapi.com/v1/images/search'
-#         response = requests.get(new_url).json()
-#     random_cat = response[0].get('url')
-#     return random_cat
-#
-#
-# def new_cat(update, context):
-#     try:
-#         chat = update.effective_chat
-#         context.bot.send_photo(chat.id, get_new_image())
-#         logger.info('Фото отправлено')
-#     except Exception as error:
-#         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
-#
-#
+def get_new_image():
+    logger.info('Пытаемся запросить котиков')
+    try:
+        response = requests.get(API_URL).json()
+    except Exception as error:
+        logger.warning('API котиков не отвечает!')
+        logger.error(error)
+        logger.info('Пытаемся запросить собачек')
+        new_url = 'https://api.thedogapi.com/v1/images/search'
+        response = requests.get(new_url).json()
+    random_cat = response[0].get('url')
+    return random_cat
+
+
+def new_cat(update, context):
+    try:
+        chat = update.effective_chat
+        context.bot.send_photo(chat.id, get_new_image())
+        logger.info('Фото отправлено')
+    except Exception as error:
+        logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
+
+
 # def wake_up(update, context):
 #     try:
 #         chat = update.effective_chat
