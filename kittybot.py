@@ -4,8 +4,10 @@ import requests
 import telebot
 import logging
 from telebot import types
+from telegram import Message
 from flask import Flask, request
 from logging import StreamHandler
+from typing import Tuple
 from dotenv import load_dotenv
 
 
@@ -31,7 +33,7 @@ server = Flask(__name__)
 
 
 @server.route('/' + TELEGRAM_TOKEN, methods=['POST'])
-def get_message():
+def get_message() -> Tuple[str, int]:
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
     bot.process_new_updates([update])
@@ -39,14 +41,14 @@ def get_message():
 
 
 @server.route('/')
-def webhook():
+def webhook() -> Tuple[str, int]:
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     return '!', 200
 
 
 @bot.message_handler(commands=['start'])
-def start(message):
+def start(message: Message) -> None:
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
@@ -70,7 +72,7 @@ def start(message):
 
 
 @bot.message_handler(content_types=['text'])
-def send_message(message):
+def send_message(message: Message) -> None:
     try:
         if message.text == '🐱 Хочу КОТИКА 🐱':
             bot.send_photo(message.chat.id, get_new_cat(message))
@@ -99,7 +101,7 @@ def send_message(message):
 
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
+def callback_inline(call) -> None:
     try:
         if call.message:
             if call.data == 'good':
@@ -113,7 +115,7 @@ def callback_inline(call):
         logger.error(f'Не удалось ответить на сообщение! Ошибка: {error}')
 
 
-def get_new_cat(message):
+def get_new_cat(message: Message) -> str:
     try:
         response = requests.get(CAT_API).json()
         random_image = response[0].get('url')
@@ -128,7 +130,7 @@ def get_new_cat(message):
         logger.info('Фото грустного котика отправлено')
 
 
-def get_new_dog(message):
+def get_new_dog(message: Message) -> str:
     try:
         response = requests.get(DOG_API).json()
         random_image = response[0].get('url')
@@ -143,7 +145,7 @@ def get_new_dog(message):
         logger.info('Фото грустной собачки отправлено')
 
 
-def main():
+def main() -> None:
     try:
         logger.debug('КотоБот запущен')
         server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
