@@ -46,7 +46,7 @@ def webhook():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
     markup.add(cat_button, dog_button)
