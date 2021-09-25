@@ -24,12 +24,6 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
 
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    # name = message.from_user.first_name
-    bot.reply_to(message, 'Привет, ' + message.from_user.first_name)      # , {}. Посмотри, какого котика я тебе нашёл!'.format(name)
-
-
 @server.route('/' + TELEGRAM_TOKEN, methods=['POST'])
 def get_message():
     json_string = request.get_data().decode('utf-8')
@@ -43,6 +37,15 @@ def webhook():
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     return '!', 200
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    name = message.from_user.first_name
+    bot.reply_to(
+        message,
+        'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
+    )
 
 
 # def get_new_image():
