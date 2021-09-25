@@ -39,6 +39,15 @@ def webhook():
     return '!', 200
 
 
+@bot.message_handler(commands=['start'])
+def start(message):
+    name = message.from_user.first_name
+    bot.reply_to(
+        message,
+        'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
+    )
+
+
 def get_new_image():
     try:
         response = requests.get(API_URL).json()
