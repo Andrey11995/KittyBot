@@ -19,7 +19,7 @@ logger.addHandler(handler)
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 APP_URL = f'https://kot0bot.herokuapp.com/{TELEGRAM_TOKEN}'
 CAT_API = 'https://api.thecatapi.com/v1/images/search'
-DOG_API = 'https://api.thedogapi.com/v1/image/search'
+DOG_API = 'https://api.thedogapi.com/v1/images/search'
 sad_cat_url = ('https://avatars.yandex.net/get-music-user-playlist/34120/'
                '546136583.1000.75797/m1000x1000?1546676930515&webp=false')
 sad_dog_url = ('https://avatars.mds.yandex.net/get-zen_doc/1898210/pub_5dcc'
@@ -46,7 +46,7 @@ def webhook():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.InlineKeyboardMarkup(row_width=2)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
     markup.add(cat_button, dog_button)
