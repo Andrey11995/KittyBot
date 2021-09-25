@@ -50,8 +50,9 @@ def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
-    how_are_you_button = types.KeyboardButton('😊 Как дела? 😊')
+    how_are_you_button = types.InlineKeyboardButton('😊 Как дела? 😊')
     markup.add(cat_button, dog_button, how_are_you_button)
+    markup.row_width = 2
     try:
         name = message.from_user.first_name
         bot.reply_to(
@@ -79,7 +80,7 @@ def send_message(message):
             bot.send_photo(message.chat.id, get_new_dog(message))
             logger.info('Фото собачки отправлено')
         elif message.text == '😊 Как дела? 😊':
-            markup = types.InlineKeyboardMarkup(row_width=4)
+            markup = types.InlineKeyboardMarkup(row_width=2)
             good = types.InlineKeyboardButton(
                 'Тоже норм',
                 callback_data='good'
@@ -104,11 +105,11 @@ def callback_inline(call):
         if call.message:
             if call.data == 'good':
                 text = 'Ну и отлично!\nКого тебе?\nКотика или собачку?'
-                bot.send_message(call.chat.id, text)
+                bot.send_message(call.message.chat.id, text)
             elif call.data == 'bad':
                 text = ('Ничего, все наладится!\n'
                         'Давай скину котика или собачку?')
-                bot.send_message(call.chat.id, text)
+                bot.send_message(call.message.chat.id, text)
     except Exception as error:
         logger.error(f'Не удалось ответить на сообщение! Ошибка: {error}')
 
