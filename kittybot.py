@@ -50,7 +50,8 @@ def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
-    markup.add(cat_button, dog_button)
+    how_are_you_button = types.KeyboardButton('😊 Как дела? 😊')
+    markup.add(cat_button, dog_button, how_are_you_button)
     try:
         name = message.from_user.first_name
         bot.reply_to(
@@ -69,7 +70,7 @@ def start(message):
 
 
 @bot.message_handler(content_types=['text'])
-def new_image(message):
+def send_message(message):
     try:
         if message.text == '🐱 Хочу КОТИКА 🐱':
             bot.send_photo(message.chat.id, get_new_cat(message))
@@ -77,8 +78,39 @@ def new_image(message):
         elif message.text == '🐶 Хочу СОБАЧКУ 🐶':
             bot.send_photo(message.chat.id, get_new_dog(message))
             logger.info('Фото собачки отправлено')
+        elif message.text == '😊 Как дела? 😊':
+            markup = types.InlineKeyboardMarkup(row_width=4)
+            good = types.InlineKeyboardButton(
+                'Тоже норм',
+                callback_data='good'
+            )
+            bad = types.InlineKeyboardButton(
+                'Ну, такое...',
+                callback_data='bad'
+            )
+            markup.add(good, bad)
+            bot.send_message(
+                message.chat.id,
+                'Норм, твои как?',
+                reply_markup=markup
+            )
     except Exception as error:
-        logger.error(f'Не удалось отправить фото! Ошибка: {error}')
+        logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    try:
+        if call.message:
+            if call.data == 'good':
+                text = 'Ну и отлично!\nКого тебе?\nКотика или собачку?'
+                bot.send_message(call.chat.id, text)
+            elif call.data == 'bad':
+                text = ('Ничего, все наладится!\n'
+                        'Давай скину котика или собачку?')
+                bot.send_message(call.chat.id, text)
+    except Exception as error:
+        logger.error(f'Не удалось ответить на сообщение! Ошибка: {error}')
 
 
 def get_new_cat(message):
