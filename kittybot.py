@@ -72,7 +72,10 @@ def new_image(message):
     try:
         if message.text == '🐱 Хочу КОТИКА 🐱':
             bot.send_photo(message.chat.id, get_new_cat(message))
-            logger.info('Фото отправлено')
+            logger.info('Фото котика отправлено')
+        elif message.text == '🐶 Хочу СОБАЧКУ 🐶':
+            bot.send_photo(message.chat.id, get_new_dog(message))
+            logger.info('Фото собачки отправлено')
     except Exception as error:
         logger.error(f'Не удалось отправить фото! Ошибка: {error}')
 
@@ -99,12 +102,6 @@ def get_new_dog(message):
         print(response.status_code)
         random_image = response[0].get('url')
         return random_image
-    except KeyError:
-        logger.warning('API собачек не отвечает!')
-        text = ('К сожалению сервер собачек сейчас недоступен...\n'
-                'Попробуйте попросить у меня собачку позднее')
-        bot.send_message(message.chat.id, text)
-        bot.send_photo(message.chat.id, requests.get(sad_dog_url).content)
     except Exception as error:
         logger.warning('API собачек не отвечает!')
         logger.error(f'Ошибка: {error}')
