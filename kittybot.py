@@ -13,15 +13,21 @@ load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 APP_URL = f'https://kot0bot.herokuapp.com/{TELEGRAM_TOKEN}'
-API_URL = 'https://api.thecatapi.com/v1/images/search'
+# API_URL = 'https://api.thecatapi.com/v1/images/search'
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-handler = StreamHandler(sys.stderr)
-logger.addHandler(handler)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)
+# handler = StreamHandler(sys.stderr)
+# logger.addHandler(handler)
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    # name = message.from_user.first_name
+    bot.reply_to(message, 'Привет, ' + message.from_user.first_name)      # , {}. Посмотри, какого котика я тебе нашёл!'.format(name)
 
 
 @server.route('/' + TELEGRAM_TOKEN, methods=['POST'])
@@ -37,12 +43,6 @@ def webhook():
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     return '!', 200
-
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    # name = message.from_user.first_name
-    bot.reply_to(message, 'Привет, ' + message.from_user.first_name)      # , {}. Посмотри, какого котика я тебе нашёл!'.format(name)
 
 
 # def get_new_image():
@@ -95,5 +95,5 @@ def start(message):
     # updater.idle()
 
 
-if __name__ == '__main__':
-    server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+# if __name__ == '__main__':
+server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
