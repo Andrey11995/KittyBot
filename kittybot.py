@@ -3,9 +3,9 @@ import sys
 import requests
 import logging
 import telebot
-from logging import StreamHandler
-from telegram import ReplyKeyboardMarkup
+from telebot import types
 from flask import Flask, request
+from logging import StreamHandler
 from dotenv import load_dotenv
 
 
@@ -41,16 +41,32 @@ def webhook():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    name = message.from_user.first_name
-    bot.reply_to(
-        message,
-        'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
-    )
-    bot.send_photo(message.chat.id, get_new_image())
+    try:
+        name = message.from_user.first_name
+        bot.reply_to(
+            message,
+            'Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name)
+        )
+        bot.send_photo(message.chat.id, get_new_image())
+        logger.info('Фото отправлено')
+    except Exception as error:
+        logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
+
+
+@bot.message_handler(content_types=['text'])
+def new_cat(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    send_cat = types.KeyboardButton('🐱 КОТИКИ')
+    markup.add(send_cat)
+    try:
+        if message.text == '🐱 КОТИКИ':
+            bot.send_photo(message.chat.id, get_new_image())
+            logger.info('Фото отправлено')
+    except Exception as error:
+        logger.error(f'Не удалось отправить фото! Ошибка: {error}')
 
 
 def get_new_image():
-    logger.info('Пытаемся запросить котиков')
     try:
         response = requests.get(API_URL).json()
     except Exception as error:
@@ -59,46 +75,27 @@ def get_new_image():
         logger.info('Пытаемся запросить собачек')
         new_url = 'https://api.thedogapi.com/v1/images/search'
         response = requests.get(new_url).json()
-    random_cat = response[0].get('url')
-    return random_cat
+    random_image = response[0].get('url')
+    return random_image
 
 
-def new_cat(update, context):
-    try:
-        chat = update.effective_chat
-        context.bot.send_photo(chat.id, get_new_image())
-        logger.info('Фото отправлено')
-    except Exception as error:
-        logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
-
-
-# def wake_up(update, context):
+# def new_cat(update, context):
 #     try:
 #         chat = update.effective_chat
-#         name = update.message.chat.first_name
-#         button = ReplyKeyboardMarkup([['/newcat']], resize_keyboard=True)
-#         context.bot.send_message(
-#             chat_id=chat.id,
-#             text='Привет, {}. Посмотри, какого котика я тебе нашёл!'.format(name),
-#             reply_markup=button
-#         )
 #         context.bot.send_photo(chat.id, get_new_image())
 #         logger.info('Фото отправлено')
 #     except Exception as error:
 #         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
 
 
-# def main():
-#     logger.debug('КотоБот запущен')
-
-    # updater = Updater(token=TELEGRAM_TOKEN)
-    #
-    # updater.dispatcher.add_handler(CommandHandler('start', wake_up))
-    # updater.dispatcher.add_handler(CommandHandler('newcat', new_cat))
-    #
-    # updater.start_polling()
-    # updater.idle()
+def main():
+    try:
+        server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+        logger.debug('КотоБот запущен')
+    except Exception as error:
+        logger.critical(f'Ошибка при запуске сервера: {error}')
 
 
-# if __name__ == '__main__':
-server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+if __name__ == '__main__':
+    main()
+
