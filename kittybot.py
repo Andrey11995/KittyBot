@@ -47,12 +47,11 @@ def webhook():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     cat_button = types.InlineKeyboardButton('🐱 Хочу КОТИКА 🐱')
     dog_button = types.InlineKeyboardButton('🐶 Хочу СОБАЧКУ 🐶')
     how_are_you_button = types.InlineKeyboardButton('😊 Как дела? 😊')
     markup.add(cat_button, dog_button, how_are_you_button)
-    markup.row_width = 2
     try:
         name = message.from_user.first_name
         bot.reply_to(
