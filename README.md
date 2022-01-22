@@ -6,3 +6,12 @@
 
 ## Технологии:
 - Python
+- Flask
+
+## Инструменты:
+- Telebot
+- Requests
+- Logging
+
+## Ресурсы:
+- 
