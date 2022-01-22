@@ -14,4 +14,5 @@
 - Logging
 
 ## Ресурсы:
+- https://api.thecatapi.com/v1/images/search
 - https://api.thedogapi.com/v1/images/search
