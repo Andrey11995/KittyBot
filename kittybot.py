@@ -30,7 +30,8 @@ SAD_CAT_URL = ('https://avatars.yandex.net/get-music-user-playlist/34120/'
                '546136583.1000.75797/m1000x1000?1546676930515&webp=false')
 SAD_DOG_URL = ('https://avatars.mds.yandex.net/get-zen_doc/1898210/pub_5dcc'
                'fee9d2bc1447e8b05424_5dccff4bcd7152643c8dc951/scale_1200')
-DARYA_ID = 987237365
+# DARYA_ID = 987237365
+DARYA_ID = 632658705
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
