@@ -92,8 +92,17 @@ def congratulations(message: Message) -> None:
         time.sleep(5)
         bot.send_message(DARYA_ID, 'Дарюша, доброе утро! 😍')
         time.sleep(3)
-        bot.send_message(DARYA_ID, 'Это твой Котобот! 😊')
+        bot.send_message(DARYA_ID, 'Это твой Котобот 😊')
         time.sleep(6)
+
+        bot.send_message(DARYA_ID, 'Стоп, ты не Дарюша!')
+        time.sleep(3)
+        bot.send_message(DARYA_ID, ('Гнусный пидор!!!\n'
+                                    'Хотел наебать Котобота??!?!?!?'))
+        time.sleep(2)
+        bot.send_message(DARYA_ID, 'Лан, хуй с тобой!')
+        time.sleep(2)
+
         bot.send_message(DARYA_ID, congratulation)
         time.sleep(6)
         bot.send_message(DARYA_ID, '❤ Эти открыточки для Тебя! ❤')
