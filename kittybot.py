@@ -132,8 +132,8 @@ def send_message(message: Message) -> None:
         elif message.text == '😍 Хочу новую открытку! 😍':
             text = ['Пожалуйста!', 'Держи!', 'Это можно!',
                     'Запросто!', 'Конечно!', 'Отправляю!']
-            incorrect_text = ['Ой, сорян...', 'Упс...', 'Извините...',
-                              'Прошу прощения...']
+            sorry = ['Ой, сорян...', 'Упс...', 'Извините...',
+                     'Прошу прощения...']
             image = random.choice(image_urls)
             if image != incorrect:
                 bot.send_message(DARYA_ID, random.choice(text))
@@ -143,8 +143,8 @@ def send_message(message: Message) -> None:
                 bot.send_message(DARYA_ID, random.choice(text))
                 time.sleep(2)
                 bot.send_photo(DARYA_ID, image)
-                time.sleep(3)
-                bot.send_message(DARYA_ID, random.choice(incorrect_text))
+                time.sleep(2)
+                bot.send_message(DARYA_ID, random.choice(sorry))
                 time.sleep(2)
                 bot.send_photo(DARYA_ID, correct)
             logger.info('Открытка отправлена')

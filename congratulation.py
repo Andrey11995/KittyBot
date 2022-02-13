@@ -11,5 +11,6 @@ image_urls = [
     'https://kartinki-life.ru/articles/2020/01/29/kartinki-i-otkrytki-na-den-vseh-vlublennyh-45-5.jpg',
     'https://s.fishki.net/upload/users/2016/02/14/934067/9e09326fa51f3521bc9e8b464a93ca4d.jpg',
 ]
+
 incorrect = 'https://s.fishki.net/upload/users/2016/02/14/934067/9e09326fa51f3521bc9e8b464a93ca4d.jpg'
 correct = 'https://piclike.ru/wp-content/uploads/2021/07/valentines-419.jpg'
