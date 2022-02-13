@@ -13,7 +13,7 @@ from flask import Flask, request
 from telebot import types
 from telegram import Message
 
-from congratulation import correct, image_urls, incorrect
+from congratulation import correct, image_urls, incorrect, with_soul
 
 load_dotenv()
 
@@ -148,6 +148,10 @@ def send_message(message: Message) -> None:
                 time.sleep(2)
                 bot.send_photo(DARYA_ID, correct)
             logger.info('Открытка отправлена')
+        elif message.text == 'Сделано от души?':
+            bot.send_message(DARYA_ID, 'Конечно!')
+            bot.send_photo(DARYA_ID, with_soul)
+            logger.info('Ответ отправлен')
     except Exception as error:
         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
 

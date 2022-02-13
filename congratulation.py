@@ -49,7 +49,13 @@ image_urls = [
     'https://thumbs.dreamstime.com/z/%D1%81%D1%87%D0%B0%D1%81%D1%82-%D0%B8%D0%B2%D0%B0%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%BE%D1%87%D0%BA%D0%B0-%D0%BD%D1%8F-%D0%B2%D0%B0-%D0%B5%D0%BD%D1%82%D0%B8%D0%BD%D0%BE%D0%BA-%D1%81-%D0%BA%D0%BE%D1%82%D0%BE%D0%BC-37163216.jpg',
     'https://zaebov.net/uploads/posts/2021-02/1612795652_valentains-day-decoration-with-two-cats-vector-7332634.jpg',
     'https://static8.depositphotos.com/1231639/862/v/950/depositphotos_8621141-stock-illustration-valentines-day-card.jpg',
+    'https://minutkapozitiva.ru/wp-content/uploads/2019/01/vlyublennye-koty.jpg',
+    'https://i.ytimg.com/vi/KxQBOzY1XGI/maxresdefault.jpg',
+    'https://sp.bvf.ru/image/photos/6c/25/ed/9575888_s2.jpg',
+    'https://proprikol.ru/wp-content/uploads/2020/01/kartinki-s-dnem-svyatogo-valentina-144.jpg',
+    'https://www.pra3dnuk.ru/_nw/4/41533023.jpg',
 ]
 
 incorrect = 'https://s.fishki.net/upload/users/2016/02/14/934067/9e09326fa51f3521bc9e8b464a93ca4d.jpg'
 correct = 'https://piclike.ru/wp-content/uploads/2021/07/valentines-419.jpg'
+with_soul = 'https://postmania.ru/files/products/2732815-01.800x600w.jpg'
