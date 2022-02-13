@@ -1,15 +1,18 @@
+import logging
 import os
 import sys
-import requests
-import telebot
-import logging
-from telebot import types
-from telegram import Message
-from flask import Flask, request
+import time
 from logging import StreamHandler
 from typing import Tuple
-from dotenv import load_dotenv
 
+import requests
+import telebot
+from dotenv import load_dotenv
+from flask import Flask, request
+from telebot import types
+from telegram import Message
+
+from congratulation import get_image
 
 load_dotenv()
 
@@ -22,10 +25,9 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 APP_URL = f'https://kot0bot.herokuapp.com/{TELEGRAM_TOKEN}'
 CAT_API = 'https://api.thecatapi.com/v1/images/search'
 DOG_API = 'https://api.thedogapi.com/v1/images/search'
-
-sad_cat_url = ('https://avatars.yandex.net/get-music-user-playlist/34120/'
+SAD_CAT_URL = ('https://avatars.yandex.net/get-music-user-playlist/34120/'
                '546136583.1000.75797/m1000x1000?1546676930515&webp=false')
-sad_dog_url = ('https://avatars.mds.yandex.net/get-zen_doc/1898210/pub_5dcc'
+SAD_DOG_URL = ('https://avatars.mds.yandex.net/get-zen_doc/1898210/pub_5dcc'
                'fee9d2bc1447e8b05424_5dccff4bcd7152643c8dc951/scale_1200')
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
@@ -69,6 +71,35 @@ def start(message: Message) -> None:
         logger.info('Фото отправлено')
     except Exception as error:
         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
+
+
+@bot.message_handler(commands=['valentine'])
+def congratulations(message: Message) -> None:
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    new_image = types.InlineKeyboardButton('Хочу новую открытку!')
+    markup.add(new_image)
+    congratulation = ('Прими от меня и моего создателя '
+                      '(по совместительству твоего мужа) '
+                      'поздравления с Днем Святого Валентина '
+                      'и конечно же с вашей годовщиной!')
+    try:
+        bot.reply_to(
+            message,
+            'Выполняю секретный код!'
+        )
+        time.sleep(2)
+        bot.send_message(987237365, 'Дарюша, доброе утро!')
+        time.sleep(2)
+        bot.send_message(987237365, 'Это твой Котобот!')
+        time.sleep(5)
+        bot.send_message(987237365, congratulation)
+        time.sleep(6)
+        bot.send_message(987237365, 'Эти открыточки для Тебя!')
+        time.sleep(3)
+        bot.send_photo(987237365, get_image(0), reply_markup=markup)
+        logger.info('Сообщения и открытка отправлены')
+    except Exception as error:
+        logger.error(f'Ошибка отправки сообщений: {error}')
 
 
 @bot.message_handler(content_types=['text'])
@@ -118,30 +149,28 @@ def callback_inline(call) -> None:
 def get_new_cat(message: Message) -> str:
     try:
         response = requests.get(CAT_API).json()
-        random_image = response[0].get('url')
-        return random_image
+        return response[0].get('url')
     except Exception as error:
         logger.warning('API котиков не отвечает!')
         logger.error(f'Ошибка: {error}')
         text = ('К сожалению сервер котиков сейчас недоступен...\n'
                 'Попробуйте попросить у меня котика позднее')
         bot.send_message(message.chat.id, text)
-        bot.send_photo(message.chat.id, requests.get(sad_cat_url).content)
+        bot.send_photo(message.chat.id, requests.get(SAD_CAT_URL).content)
         logger.info('Фото грустного котика отправлено')
 
 
 def get_new_dog(message: Message) -> str:
     try:
         response = requests.get(DOG_API).json()
-        random_image = response[0].get('url')
-        return random_image
+        return response[0].get('url')
     except Exception as error:
         logger.warning('API собачек не отвечает!')
         logger.error(f'Ошибка: {error}')
         text = ('К сожалению сервер собачек сейчас недоступен...\n'
                 'Попробуйте попросить у меня собачку позднее')
         bot.send_message(message.chat.id, text)
-        bot.send_photo(message.chat.id, requests.get(sad_dog_url).content)
+        bot.send_photo(message.chat.id, requests.get(SAD_DOG_URL).content)
         logger.info('Фото грустной собачки отправлено')
 
 
