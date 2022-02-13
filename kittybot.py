@@ -13,7 +13,7 @@ from flask import Flask, request
 from telebot import types
 from telegram import Message
 
-from congratulation import image_urls, osetin
+from congratulation import correct, image_urls, incorrect
 
 load_dotenv()
 
@@ -96,7 +96,7 @@ def congratulations(message: Message) -> None:
         time.sleep(6)
         bot.send_message(DARYA_ID, congratulation)
         time.sleep(6)
-        bot.send_message(DARYA_ID, '❤❤❤ Эти открыточки для Тебя! ❤❤❤')
+        bot.send_message(DARYA_ID, '❤ Эти открыточки для Тебя! ❤')
         time.sleep(4)
         bot.send_photo(DARYA_ID, image_urls[0], reply_markup=markup)
         logger.info('Сообщения и открытка отправлены')
@@ -132,27 +132,21 @@ def send_message(message: Message) -> None:
         elif message.text == '😍 Хочу новую открытку! 😍':
             text = ['Пожалуйста!', 'Держи!', 'Это можно!',
                     'Запросто!', 'Конечно!', 'Отправляю!']
-            count = 1
-            if count == 4:
+            incorrect_text = ['Ой, сорян...', 'Упс...', 'Извините...',
+                              'Прошу прощения...']
+            image = random.choice(image_urls)
+            if image != incorrect:
                 bot.send_message(DARYA_ID, random.choice(text))
                 time.sleep(2)
-                bot.send_photo(DARYA_ID, osetin)
-                time.sleep(3)
-                bot.send_message(DARYA_ID, 'Ой, сорян...')
-                time.sleep(3)
-                bot.send_photo(DARYA_ID, image_urls[count])
-                count += 1
-            elif count < len(image_urls):
-                bot.send_message(DARYA_ID, random.choice(text))
-                time.sleep(2)
-                bot.send_photo(DARYA_ID, image_urls[count])
-                count += 1
+                bot.send_photo(DARYA_ID, image)
             else:
-                count = 0
                 bot.send_message(DARYA_ID, random.choice(text))
                 time.sleep(2)
-                bot.send_photo(DARYA_ID, image_urls[count])
-                count += 1
+                bot.send_photo(DARYA_ID, image)
+                time.sleep(3)
+                bot.send_message(DARYA_ID, random.choice(incorrect_text))
+                time.sleep(2)
+                bot.send_photo(DARYA_ID, correct)
             logger.info('Открытка отправлена')
     except Exception as error:
         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
