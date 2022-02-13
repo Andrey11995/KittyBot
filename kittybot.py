@@ -1,5 +1,6 @@
 import logging
 import os
+import random
 import sys
 import time
 from logging import StreamHandler
@@ -12,7 +13,7 @@ from flask import Flask, request
 from telebot import types
 from telegram import Message
 
-from congratulation import get_image
+from congratulation import image_urls, osetin
 
 load_dotenv()
 
@@ -29,6 +30,7 @@ SAD_CAT_URL = ('https://avatars.yandex.net/get-music-user-playlist/34120/'
                '546136583.1000.75797/m1000x1000?1546676930515&webp=false')
 SAD_DOG_URL = ('https://avatars.mds.yandex.net/get-zen_doc/1898210/pub_5dcc'
                'fee9d2bc1447e8b05424_5dccff4bcd7152643c8dc951/scale_1200')
+DARYA_ID = 987237365
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 server = Flask(__name__)
@@ -76,27 +78,27 @@ def start(message: Message) -> None:
 @bot.message_handler(commands=['valentine'])
 def congratulations(message: Message) -> None:
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-    new_image = types.InlineKeyboardButton('Хочу новую открытку!')
+    new_image = types.InlineKeyboardButton('😍 Хочу новую открытку! 😍')
     markup.add(new_image)
     congratulation = ('Прими от меня и моего создателя '
                       '(по совместительству твоего мужа) '
                       'поздравления с Днем Святого Валентина '
-                      'и конечно же с вашей годовщиной!')
+                      'и конечно же с вашей годовщиной! ❤')
     try:
         bot.reply_to(
             message,
             'Выполняю секретный код!'
         )
-        time.sleep(2)
-        bot.send_message(987237365, 'Дарюша, доброе утро!')
-        time.sleep(2)
-        bot.send_message(987237365, 'Это твой Котобот!')
         time.sleep(5)
-        bot.send_message(987237365, congratulation)
-        time.sleep(6)
-        bot.send_message(987237365, 'Эти открыточки для Тебя!')
+        bot.send_message(DARYA_ID, 'Дарюша, доброе утро! 😍')
         time.sleep(3)
-        bot.send_photo(987237365, get_image(0), reply_markup=markup)
+        bot.send_message(DARYA_ID, 'Это твой Котобот! 😊')
+        time.sleep(6)
+        bot.send_message(DARYA_ID, congratulation)
+        time.sleep(6)
+        bot.send_message(DARYA_ID, '❤❤❤ Эти открыточки для Тебя! ❤❤❤')
+        time.sleep(4)
+        bot.send_photo(DARYA_ID, image_urls[0], reply_markup=markup)
         logger.info('Сообщения и открытка отправлены')
     except Exception as error:
         logger.error(f'Ошибка отправки сообщений: {error}')
@@ -127,6 +129,31 @@ def send_message(message: Message) -> None:
                 'Норм, твои как?',
                 reply_markup=markup
             )
+        elif message.text == '😍 Хочу новую открытку! 😍':
+            text = ['Пожалуйста!', 'Держи!', 'Это можно!',
+                    'Запросто!', 'Конечно!', 'Отправляю!']
+            count = 1
+            if count == 4:
+                bot.send_message(DARYA_ID, random.choice(text))
+                time.sleep(2)
+                bot.send_photo(DARYA_ID, osetin)
+                time.sleep(3)
+                bot.send_message(DARYA_ID, 'Ой, сорян...')
+                time.sleep(3)
+                bot.send_photo(DARYA_ID, image_urls[count])
+                count += 1
+            elif count < len(image_urls):
+                bot.send_message(DARYA_ID, random.choice(text))
+                time.sleep(2)
+                bot.send_photo(DARYA_ID, image_urls[count])
+                count += 1
+            else:
+                count = 0
+                bot.send_message(DARYA_ID, random.choice(text))
+                time.sleep(2)
+                bot.send_photo(DARYA_ID, image_urls[count])
+                count += 1
+            logger.info('Открытка отправлена')
     except Exception as error:
         logger.error(f'Не удалось отправить сообщение! Ошибка: {error}')
 
