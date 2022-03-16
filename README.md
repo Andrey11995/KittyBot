@@ -3,6 +3,7 @@
 
 ### Имя в Telegram: @KoT0Bot
 
+![Image](https://github.com/Andrey11995/KittyBot/raw/master/static/kotobot.jpg)
 
 ## Технологии:
 - Python
